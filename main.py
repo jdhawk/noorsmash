@@ -1,0 +1,111 @@
+import pygame as pg
+import random
+from actions.visual_action_base import VisualActionBase
+from actions.image_action import ImageAction
+from random import randint
+import os, random
+
+
+WIDTH = 800
+HEIGHT = 600
+FPS = 30
+
+# define colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+
+# initialize pygame and create window
+
+pg.init()
+pg.mixer.init()
+
+infoObject = pg.display.Info()
+screen = pg.display.set_mode((infoObject.current_w, infoObject.current_h))
+
+
+pg.display.set_caption("NoorSmash")
+
+clock = pg.time.Clock()
+
+all_sprites = pg.sprite.Group()
+
+imagePath = "./images/" +random.choice(os.listdir("./images"))
+sprite = ImageAction(imagePath)
+sprite.setRandomColor()
+sprite.setRandomPosition()
+
+
+all_sprites.add(sprite)
+
+# Game loop
+
+running = True
+while running:
+    # keep loop running at the right speed
+    clock.tick(FPS)
+    # Process input (events)
+    for event in pg.event.get():
+        # check for closing window
+        if event.type == pg.QUIT:
+            running = False
+        elif event.type == pg.KEYDOWN:
+
+            keys = pg.key.get_pressed()
+            if keys[pg.K_LCTRL] and keys[pg.K_ESCAPE]:
+                running = False
+
+            choice = randint(1,6)
+
+            soundPath = "./sounds/" +random.choice(os.listdir("./sounds"))
+            sound = pg.mixer.Sound(soundPath)
+            sound.play()
+
+            print (soundPath)
+            
+            
+            if choice == 1:
+                randomSprite = random.choice(all_sprites.sprites())
+                randomSprite.setRandomColor()
+            elif choice == 2:
+                randomSprite = random.choice(all_sprites.sprites())
+                randomSprite.setRandomPosition()
+            elif choice == 3:  
+                randomSprite = random.choice(all_sprites.sprites())
+                randomSprite.fade = True
+            elif choice == 4:
+                newSprite = VisualActionBase(randint(10,50),randint(10,60))
+                newSprite.setRandomColor()
+                newSprite.setRandomPosition()
+                all_sprites.add(newSprite)
+            elif choice == 5:
+                randomSprite = random.choice(all_sprites.sprites())
+                randomSprite.vel = pg.math.Vector2(randint(-10,10),randint(-20,20))
+            elif choice == 6:
+                imagePath = "./images/" +random.choice(os.listdir("./images"))
+                sprite = ImageAction(imagePath)
+                sprite.setRandomColor()
+                sprite.setRandomPosition()
+                all_sprites.add(sprite)
+
+
+            # Always have at least one sprite
+            if len(all_sprites.sprites()) == 0:
+                newSprite = VisualActionBase(randint(10,50),randint(10,60))
+                newSprite.setRandomColor()
+                newSprite.setRandomPosition()
+                all_sprites.add(newSprite)
+
+
+    # Update
+    all_sprites.update()
+
+    # Draw / render
+    screen.fill(BLACK)
+    all_sprites.draw(screen)
+    # *after* drawing everything, flip the display
+    pg.display.flip()
+
+pg.quit()
