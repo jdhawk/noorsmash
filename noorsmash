@@ -28,6 +28,7 @@ screen = pg.display.set_mode((infoObject.current_w, infoObject.current_h))
 
 
 pg.display.set_caption("NoorSmash")
+pg.display.toggle_fullscreen()
 
 clock = pg.time.Clock()
 
@@ -55,7 +56,7 @@ while running:
         elif event.type == pg.KEYDOWN:
 
             keys = pg.key.get_pressed()
-            if keys[pg.K_LCTRL] and keys[pg.K_ESCAPE]:
+            if keys[pg.K_LALT] and keys[pg.K_q]:
                 running = False
 
             choice = randint(1,6)
@@ -63,10 +64,6 @@ while running:
             soundPath = "./sounds/" +random.choice(os.listdir("./sounds"))
             sound = pg.mixer.Sound(soundPath)
             sound.play()
-
-            print (soundPath)
-            
-            
             if choice == 1:
                 randomSprite = random.choice(all_sprites.sprites())
                 randomSprite.setRandomColor()
